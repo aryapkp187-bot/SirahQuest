@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SirahQuest - Petualangan Ilmu & Sejarah Islam</title>
+    
+    <!-- Google Fonts: Plus Jakarta Sans & Amiri untuk sentuhan kaligrafi/islami -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        arabic: ['"Amiri"', 'serif'],
+                    },
+                    colors: {
+                        cream: {
+                            50: '#FDFBF7',
+                            100: '#FAF5EB',
+                            200: '#F3E8D2',
+                        },
+                        teal: {
+                            50: '#F0FDFA',
+                            100: '#CCFBF1',
+                            200: '#99F6E4',
+                            500: '#14B8A6',
+                            600: '#0D9488',
+                            700: '#0F766E',
+                            800: '#115E59',
+                            900: '#134E4A',
+                        },
+                        amber: {
+                            50: '#FFFBEB',
+                            100: '#FEF3C7',
+                            200: '#FDE68A',
+                            300: '#FCD34D',
+                            400: '#FBBF24',
+                            500: '#F59E0B',
+                            600: '#D97706',
+                        }
+                    },
+                    boxShadow: {
+                        'playful': '0 6px 0 0 rgba(15, 118, 110, 0.15)',
+                        'playful-teal': '0 5px 0 0 #0F766E',
+                        'playful-amber': '0 5px 0 0 #D97706',
+                        'playful-sm': '0 3px 0 0 rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Custom CSS untuk animasi halus & pola islami ringan -->
+    <style>
+        body {
+            background-color: #FDFBF7;
+            background-image: radial-gradient(#0D948812 1.5px, transparent 1.5px), radial-gradient(#F59E0B15 1.5px, #FDFBF7 1.5px);
+            background-size: 40px 40px;
+            background-position: 0 0, 20px 20px;
+            color: #1E293B;
+            overflow-x: hidden;
+        }
+
+        /* Efek tombol gamified membal saat ditekan */
+        .btn-game {
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-game:active {
+            transform: translateY(4px);
+            box-shadow: none !important;
+        }
+
+        /* Animasi masuk halaman */
+        .tab-content {
+            animation: fadeSlideUp 0.35s ease-out forwards;
+        }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Animasi Confetti / Bintang */
+        @keyframes popScale {
+            0% { transform: scale(0.8); opacity: 0; }
+            70% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popScale 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF5EB;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #99F6E4;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #14B8A6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-teal-200 selection:text-teal-900">
+
+    <!-- ===================================================================== -->
+    <!-- TOP NAVBAR & GAMIFICATION STATUS BAR                                  -->
+    <!-- ===================================================================== -->
+    <header class="sticky top-0 z-40 bg-cream-50/90 backdrop-blur-md border-b-2 border-cream-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+            
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTab('beranda')">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-teal-500 to-teal-700 text-white flex items-center justify-center shadow-playful-teal text-xl">
+                    <i class="fa-solid fa-mosque"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-xl tracking-tight text-teal-900 leading-none">
+                        Sirah<span class="text-amber-500">Quest</span>
+                    </h1>
+                    <p class="text-xs font-medium text-teal-600 mt-0.5">Jelajah Sejarah & Ilmu Islam</p>
+                </div>
+            </div>
+
+            <!-- Player Stats (Streak, XP, Gelar/Level) -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Daily Streak -->
+                <div class="flex items-center gap-1.5 bg-amber-100 border-2 border-amber-300 text-amber-800 px-3 py-1.5 rounded-2xl font-bold text-xs sm:text-sm shadow-playful-sm" title="Streak Harian">
+                    <i class="fa-solid fa-fire text-amber-500 text-base animate-pulse"></i>
+                    <span id="nav-streak">0</span>
+                    <span class="hidden sm:inline">Hari</span>
+                </div>
+
+                <!-- Total XP -->
+                <div class="flex items-center gap-1.5 bg-teal-100 border-2 border-teal-300 text-teal-800 px-3 py-1.5 rounded-2xl font-bold text-xs sm:text-sm shadow-playful-sm" title="Total Poin Pengalaman">
+                    <i class="fa-solid fa-star text-amber-400 text-base"></i>
+                    <span id="nav-xp">0</span> XP
+                </div>
+
+                <!-- Badge / Gelar Button -->
+                <button onclick="openProfileModal()" class="flex items-center gap-2 bg-white hover:bg-cream-100 border-2 border-teal-200 px-3 py-1.5 rounded-2xl transition btn-game shadow-playful-sm">
+                    <div id="nav-rank-icon" class="w-6 h-6 rounded-full bg-teal-600 text-white flex items-center justify-center text-xs">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+                    <div class="text-left hidden md:block">
+                        <div class="text-[10px] uppercase tracking-wider font-bold text-slate-400 leading-none">Gelar Saat Ini</div>
+                        <div id="nav-rank-title" class="text-xs font-extrabold text-teal-800">Pencari Ilmu</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-down text-xs text-slate-400 ml-1"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs (Desktop & Mobile Friendly) -->
+        <nav class="max-w-6xl mx-auto px-4 pb-2.5 pt-1 overflow-x-auto no-scrollbar">
+            <div class="flex items-center gap-2 min-w-max">
+                <button onclick="switchTab('beranda')" id="tab-btn-beranda" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition bg-teal-600 text-white shadow-playful-teal">
+                    <i class="fa-solid fa-compass"></i> Beranda & Misi
+                </button>
+                <button onclick="switchTab('timeline')" id="tab-btn-timeline" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition bg-white text-slate-600 hover:bg-teal-50 border border-cream-200">
+                    <i class="fa-solid fa-timeline"></i> Timeline Sirah
+                </button>
+                <button onclick="switchTab('kuis')" id="tab-btn-kuis" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition bg-white text-slate-600 hover:bg-teal-50 border border-cream-200">
+                    <i class="fa-solid fa-gamepad"></i> Kuis Cerdas Cermat
+                </button>
+                <button onclick="switchTab('tokoh')" id="tab-btn-tokoh" class="nav-tab px-4 py-2 rounded-xl font-bold text-sm flex items-center gap-2 transition bg-white text-slate-600 hover:bg-teal-50 border border-cream-200">
+                    <i class="fa-solid fa-book-open"></i> Ensiklopedia Tokoh
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- ===================================================================== -->
+    <!-- MAIN CONTENT CONTAINER                                                -->
+    <!-- ===================================================================== -->
+    <main class="flex-grow max-w-6xl w-full mx-auto px-4 py-6 sm:py-8">
+
+        <!-- ================================================================= -->
+        <!-- 1. TAB BERANDA & DAILY TRIVIA                                     -->
+        <!-- ================================================================= -->
+        <section id="view-beranda" class="tab-content space-y-6">
+            
+            <!-- Hero Banner & Progress Card -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Welcome Banner -->
+                <div class="lg:col-span-2 bg-gradient-to-br from-teal-600 via-teal-700 to-teal-800 rounded-3xl p-6 sm:p-8 text-white shadow-playful relative overflow-hidden flex flex-col justify-between">
+                    <!-- Decorative background icon -->
+                    <i class="fa-solid fa-kaaba absolute -right-6 -bottom-6 text-9xl text-white/10 rotate-12 pointer-events-none"></i>
+                    
+                    <div>
+                        <span class="inline-block px-3 py-1 bg-amber-400 text-teal-950 font-extrabold text-xs rounded-full uppercase tracking-wider mb-3">
+                            Assalamu'alaikum, Petualang!
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold leading-tight mb-2">
+                            Jelajahi Jejak Emas Peradaban & Sirah Nabawiyah
+                        </h2>
+                        <p class="text-teal-100 text-sm sm:text-base max-w-xl leading-relaxed">
+                            Pelajari kisah perjuangan Rasulullah ﷺ, uji wawasan keislamanmu di arena kuis, dan kumpulkan XP untuk meraih gelar tertinggi!
+                        </p>
+                    </div>
+
+                    <div class="mt-6 flex flex-wrap gap-3">
+                        <button onclick="switchTab('timeline')" class="btn-game bg-amber-400 hover:bg-amber-300 text-teal-950 font-extrabold px-5 py-3 rounded-2xl shadow-playful-amber flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-map-location-dot"></i> Mulai Jelajah Sirah
+                        </button>
+                        <button onclick="switchTab('kuis')" class="btn-game bg-teal-500/40 hover:bg-teal-500/60 border-2 border-teal-300/50 text-white font-bold px-5 py-3 rounded-2xl flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-bolt text-amber-300"></i> Tantangan Kuis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Level & Rank Card -->
+                <div class="bg-white border-2 border-cream-200 rounded-3xl p-6 shadow-playful flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="text-xs font-extrabold uppercase tracking-wider text-teal-600">Status Petualang</span>
+                            <button onclick="openProfileModal()" class="text-xs font-bold text-amber-600 hover:underline">Lihat Lencana</button>
+                        </div>
+                        
+                        <div class="flex items-center gap-4 my-2">
+                            <div id="home-rank-badge" class="w-16 h-16 rounded-2xl bg-amber-100 border-2 border-amber-300 text-amber-600 flex items-center justify-center text-3xl shadow-playful-sm">
+                                <i class="fa-solid fa-seedling"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 font-semibold">Gelar Aktif</div>
+                                <h3 id="home-rank-title" class="text-xl font-extrabold text-teal-900">Pencari Ilmu</h3>
+                                <p id="home-rank-next" class="text-xs font-medium text-teal-600 mt-0.5">Butuh 100 XP lagi ke level berikutnya</p>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar -->
+                        <div class="mt-4">
+                            <div class="flex justify-between text-xs font-bold mb-1.5">
+                                <span class="text-slate-600">Progres Level</span>
+                                <span id="home-xp-progress-text" class="text-teal-700">0 / 100 XP</span>
+                            </div>
+                            <div class="w-full h-3.5 bg-cream-200 rounded-full overflow-hidden p-0.5">
+                                <div id="home-xp-bar" class="h-full bg-gradient-to-r from-teal-500 to-amber-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 mt-5 pt-4 border-t border-cream-200 text-center">
+                        <div class="bg-cream-50 p-2 rounded-xl">
+                            <div id="stat-quizzes" class="font-extrabold text-teal-800 text-lg">0</div>
+                            <div class="text-[11px] font-semibold text-slate-500">Kuis Selesai</div>
+                        </div>
+                        <div class="bg-cream-50 p-2 rounded-xl">
+                            <div id="stat-sirah" class="font-extrabold text-amber-600 text-lg">0/8</div>
+                            <div class="text-[11px] font-semibold text-slate-500">Sirah Dibaca</div>
+                        </div>
+                        <div class="bg-cream-50 p-2 rounded-xl">
+                            <div id="stat-tokoh" class="font-extrabold text-teal-600 text-lg">0/6</div>
+                            <div class="text-[11px] font-semibold text-slate-500">Tokoh Dibuka</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tantangan Harian (Daily Trivia) -->
+            <div class="bg-amber-50 border-2 border-amber-300 rounded-3xl p-6 sm:p-7 shadow-playful relative overflow-hidden">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-400 text-teal-950 flex items-center justify-center text-xl shadow-playful-amber shrink-0">
+                            <i class="fa-solid fa-calendar-day"></i>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h3 class="text-lg sm:text-xl font-extrabold text-teal-950">Tantangan Harian (Daily Trivia)</h3>
+                                <span class="px-2.5 py-0.5 bg-teal-600 text-white text-xs font-bold rounded-full">+30 XP</span>
+                            </div>
+                            <p class="text-xs sm:text-sm text-amber-800 font-medium">Jawab 1 pertanyaan ringan hari ini untuk menjaga Streak harianmu!</p>
+                        </div>
+                    </div>
+                    <div id="daily-status-badge" class="self-start md:self-center px-3.5 py-1.5 rounded-xl bg-white border border-amber-300 text-xs font-extrabold text-amber-700">
+                        <i class="fa-regular fa-clock mr-1"></i> Tersedia Hari Ini
+                    </div>
+                </div>
+
+                <!-- Daily Trivia Question Box -->
+                <div id="daily-trivia-container" class="bg-white rounded-2xl p-5 border border-amber-200">
+                    <p id="daily-question" class="font-bold text-slate-800 text-base sm:text-lg mb-4">Memuat pertanyaan harian...</p>
+                    <div id="daily-options" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- Options injected via JS -->
+                    </div>
+                    <div id="daily-feedback" class="hidden mt-4 p-4 rounded-xl text-sm font-medium"></div>
+                </div>
+            </div>
+
+            <!-- Quick Feature Shortcuts -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div onclick="switchTab('timeline')" class="cursor-pointer group bg-white hover:bg-teal-50/60 border-2 border-cream-200 hover:border-teal-300 rounded-3xl p-5 transition shadow-playful-sm">
+                    <div class="w-11 h-11 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-timeline"></i>
+                    </div>
+                    <h4 class="font-extrabold text-teal-950 text-base mb-1">Timeline Sirah Nabawiyah</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Telusuri 8 tonggak sejarah penting perjalanan hidup Rasulullah ﷺ lengkap dengan hikmahnya.</p>
+                </div>
+
+                <div onclick="switchTab('kuis')" class="cursor-pointer group bg-white hover:bg-amber-50/60 border-2 border-cream-200 hover:border-amber-300 rounded-3xl p-5 transition shadow-playful-sm">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-trophy"></i>
+                    </div>
+                    <h4 class="font-extrabold text-teal-950 text-base mb-1">Kuis Cerdas Cermat</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Pilih tingkat Pemula, Menengah, atau Ahli dan buktikan pemahaman sejarah Islammu.</p>
+                </div>
+
+                <div onclick="switchTab('tokoh')" class="cursor-pointer group bg-white hover:bg-teal-50/60 border-2 border-cream-200 hover:border-teal-300 rounded-3xl p-5 transition shadow-playful-sm">
+                    <div class="w-11 h-11 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-lg mb-3 group-hover:scale-110 transition">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <h4 class="font-extrabold text-teal-950 text-base mb-1">Ensiklopedia Tokoh Islam</h4>
+                    <p class="text-xs text-slate-600 leading-relaxed">Buka kartu profil para sahabat mulia dan ilmuwan muslim penemu peradaban modern.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 2. TAB TIMELINE INTERAKTIF SIRAH NABAWIYAH                        -->
+        <!-- ================================================================= -->
+        <section id="view-timeline" class="tab-content hidden space-y-6">
+            <div class="bg-white border-2 border-cream-200 rounded-3xl p-6 shadow-playful flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-teal-600">Jejak Sejarah</span>
+                    <h2 class="text-2xl font-extrabold text-teal-950">Timeline Sirah Nabawiyah</h2>
+                    <p class="text-sm text-slate-600 mt-1">Klik setiap peristiwa untuk membaca kisah lengkap, mengambil hikmah, dan meraih <strong>+15 XP</strong>!</p>
+                </div>
+                <div class="bg-teal-50 border border-teal-200 px-4 py-2.5 rounded-2xl text-right shrink-0">
+                    <div class="text-xs font-bold text-teal-700">Peristiwa Dipelajari</div>
+                    <div id="timeline-progress-label" class="text-xl font-extrabold text-teal-900">0 / 8</div>
+                </div>
+            </div>
+
+            <!-- Visual Vertical Timeline -->
+            <div class="relative pl-6 sm:pl-10 before:content-[''] before:absolute before:left-2.5 sm:before:left-4 before:top-4 before:bottom-4 before:w-1.5 before:bg-teal-200 before:rounded-full space-y-6" id="timeline-list">
+                <!-- Timeline items injected via JS -->
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 3. TAB MODE KUIS CERDAS CERMAT ISLAMI                             -->
+        <!-- ================================================================= -->
+        <section id="view-kuis" class="tab-content hidden space-y-6">
+            
+            <!-- Level Selection Screen -->
+            <div id="quiz-lobby" class="space-y-6">
+                <div class="bg-white border-2 border-cream-200 rounded-3xl p-6 sm:p-8 shadow-playful text-center max-w-3xl mx-auto">
+                    <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-500 flex items-center justify-center text-3xl mx-auto mb-4 shadow-playful-sm">
+                        <i class="fa-solid fa-brain"></i>
+                    </div>
+                    <h2 class="text-2xl sm:text-3xl font-extrabold text-teal-950">Arena Kuis Cerdas Cermat Islami</h2>
+                    <p class="text-sm sm:text-base text-slate-600 mt-2 max-w-xl mx-auto">
+                        Pilih tingkat kesulitan yang sesuai dengan kemampuanmu. Setiap jawaban benar memberikan poin XP untuk menaikkan gelarmu!
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Pemula -->
+                    <div class="bg-white border-2 border-teal-200 rounded-3xl p-6 shadow-playful flex flex-col justify-between hover:-translate-y-1 transition">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="px-3 py-1 rounded-full bg-teal-100 text-teal-800 font-extrabold text-xs">Level 1</span>
+                                <span class="font-extrabold text-amber-600 text-sm">+10 XP / Soal</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-teal-950 mb-2">Tingkat Pemula</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                                Pertanyaan dasar seputar Rukun Islam, Rukun Iman, nama-nama Nabi, dan kisah masa kecil Rasulullah ﷺ.
+                            </p>
+                        </div>
+                        <button onclick="startQuiz('pemula')" class="btn-game w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-sm shadow-playful-teal">
+                            Mulai Kuis Pemula <i class="fa-solid fa-play ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- Menengah -->
+                    <div class="bg-white border-2 border-amber-300 rounded-3xl p-6 shadow-playful flex flex-col justify-between hover:-translate-y-1 transition">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs">Level 2</span>
+                                <span class="font-extrabold text-amber-600 text-sm">+20 XP / Soal</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-teal-950 mb-2">Tingkat Menengah</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                                Menguji wawasan tentang peristiwa Hijrah, Khulafaur Rasyidin, perang-perang penting, dan sahabat utama.
+                            </p>
+                        </div>
+                        <button onclick="startQuiz('menengah')" class="btn-game w-full py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-teal-950 font-extrabold text-sm shadow-playful-amber">
+                            Mulai Kuis Menengah <i class="fa-solid fa-play ml-1"></i>
+                        </button>
+                    </div>
+
+                    <!-- Ahli -->
+                    <div class="bg-white border-2 border-teal-700 rounded-3xl p-6 shadow-playful flex flex-col justify-between hover:-translate-y-1 transition">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="px-3 py-1 rounded-full bg-teal-800 text-amber-300 font-extrabold text-xs">Level 3</span>
+                                <span class="font-extrabold text-amber-600 text-sm">+30 XP / Soal</span>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-teal-950 mb-2">Tingkat Ahli</h3>
+                            <p class="text-xs text-slate-600 leading-relaxed mb-4">
+                                Tantangan mendalam tentang detail perjanjian sejarah, ilmuwan peradaban Islam, dan Ulumul Qur'an.
+                            </p>
+                        </div>
+                        <button onclick="startQuiz('ahli')" class="btn-game w-full py-3 rounded-2xl bg-teal-800 hover:bg-teal-700 text-white font-extrabold text-sm shadow-playful-teal">
+                            Mulai Kuis Ahli <i class="fa-solid fa-fire ml-1 text-amber-400"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Quiz Arena -->
+            <div id="quiz-arena" class="hidden max-w-3xl mx-auto bg-white border-2 border-cream-200 rounded-3xl p-6 sm:p-8 shadow-playful">
+                <!-- Top Bar -->
+                <div class="flex items-center justify-between gap-4 mb-6">
+                    <button onclick="exitQuiz()" class="text-xs font-bold text-slate-500 hover:text-rose-600 flex items-center gap-1">
+                        <i class="fa-solid fa-xmark"></i> Keluar Kuis
+                    </button>
+                    <div class="flex items-center gap-2">
+                        <span id="quiz-badge-level" class="px-3 py-1 bg-teal-100 text-teal-800 text-xs font-extrabold rounded-full uppercase">Pemula</span>
+                        <span id="quiz-counter" class="text-sm font-extrabold text-slate-700">Soal 1 / 5</span>
+                    </div>
+                    <div class="text-sm font-extrabold text-amber-600">
+                        Skor: <span id="quiz-current-score">0</span> XP
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="w-full h-3 bg-cream-200 rounded-full overflow-hidden mb-6">
+                    <div id="quiz-progress-bar" class="h-full bg-teal-500 transition-all duration-300" style="width: 20%"></div>
+                </div>
+
+                <!-- Question -->
+                <h3 id="quiz-question-text" class="text-lg sm:text-xl font-extrabold text-teal-950 leading-snug mb-6">
+                    Pertanyaan akan muncul di sini...
+                </h3>
+
+                <!-- Answer Choices -->
+                <div id="quiz-choices-container" class="space-y-3">
+                    <!-- Choices injected via JS -->
+                </div>
+
+                <!-- Explanation Box (Shown after answering) -->
+                <div id="quiz-explanation-box" class="hidden mt-6 p-4 sm:p-5 rounded-2xl border-2">
+                    <div class="flex items-start gap-3">
+                        <div id="quiz-exp-icon" class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 text-white"></div>
+                        <div>
+                            <h4 id="quiz-exp-title" class="font-extrabold text-sm sm:text-base"></h4>
+                            <p id="quiz-exp-text" class="text-xs sm:text-sm mt-1 leading-relaxed"></p>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="btn-game px-6 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-sm shadow-playful-teal">
+                            Soal Berikutnya <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Result Summary -->
+            <div id="quiz-result" class="hidden max-w-2xl mx-auto bg-white border-2 border-amber-300 rounded-3xl p-8 shadow-playful text-center animate-pop">
+                <div class="w-20 h-20 rounded-3xl bg-amber-100 text-amber-500 flex items-center justify-center text-4xl mx-auto mb-4 shadow-playful-sm">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <span class="px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-extrabold uppercase">Kuis Selesai!</span>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-teal-950 mt-2">MasyaAllah, Luar Biasa!</h3>
+                <p id="quiz-result-subtitle" class="text-sm text-slate-600 mt-1">Kamu telah menyelesaikan sesi latihan kuis.</p>
+
+                <div class="grid grid-cols-2 gap-4 my-6 max-w-md mx-auto">
+                    <div class="bg-cream-50 border border-cream-200 p-4 rounded-2xl">
+                        <div class="text-xs font-bold text-slate-500">Jawaban Benar</div>
+                        <div id="quiz-result-correct" class="text-2xl font-extrabold text-teal-700 mt-1">4 / 5</div>
+                    </div>
+                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-2xl">
+                        <div class="text-xs font-bold text-amber-700">Total XP Diraih</div>
+                        <div id="quiz-result-xp" class="text-2xl font-extrabold text-amber-600 mt-1">+80 XP</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-3">
+                    <button onclick="resetQuizView()" class="btn-game px-6 py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-extrabold text-sm shadow-playful-teal">
+                        Pilih Kuis Lain
+                    </button>
+                    <button onclick="switchTab('beranda')" class="btn-game px-6 py-3 rounded-2xl bg-cream-100 hover:bg-cream-200 text-teal-900 font-extrabold text-sm">
+                        Kembali ke Beranda
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 4. TAB ENSIKLOPEDIA MINI SAHABAT & ILMUWAN MUSLIM                 -->
+        <!-- ================================================================= -->
+        <section id="view-tokoh" class="tab-content hidden space-y-6">
+            <div class="bg-white border-2 border-cream-200 rounded-3xl p-6 shadow-playful flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <span class="text-xs font-extrabold uppercase tracking-wider text-amber-600">Teladan & Inspirasi</span>
+                    <h2 class="text-2xl font-extrabold text-teal-950">Ensiklopedia Sahabat & Ilmuwan Muslim</h2>
+                    <p class="text-sm text-slate-600 mt-1">Buka kartu profil tokoh untuk mengenal kontribusi besar mereka dan dapatkan <strong>+15 XP</strong> per kartu!</p>
+                </div>
+                <!-- Filter Pills -->
+                <div class="flex gap-2">
+                    <button onclick="filterTokoh('all')" id="filter-all" class="filter-tokoh-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-teal-600 text-white">Semua</button>
+                    <button onclick="filterTokoh('Sahabat')" id="filter-Sahabat" class="filter-tokoh-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-cream-100 text-slate-700 hover:bg-teal-50">Sahabat</button>
+                    <button onclick="filterTokoh('Ilmuwan')" id="filter-Ilmuwan" class="filter-tokoh-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-cream-100 text-slate-700 hover:bg-teal-50">Ilmuwan</button>
+                </div>
+            </div>
+
+            <!-- Cards Grid -->
+            <div id="tokoh-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Tokoh cards injected via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===================================================================== -->
+    <!-- FOOTER                                                                -->
+    <!-- ===================================================================== -->
+    <footer class="bg-cream-100 border-t-2 border-cream-200 py-6 mt-10">
+        <div class="max-w-6xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <div class="flex items-center gap-2 font-bold text-teal-800">
+                <i class="fa-solid fa-mosque text-teal-600"></i>
+                <span>SirahQuest &copy; 2026 — Media Edukasi Islam Interaktif</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <span>Progres tersimpan otomatis di perangkatmu</span>
+                <button onclick="confirmResetData()" class="text-rose-600 hover:underline font-semibold">Reset Progres</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL DETAIL (TIMELINE / TOKOH / GELAR & LENCANA)                     -->
+    <!-- ===================================================================== -->
+    <div id="custom-modal" class="fixed inset-0 z-50 hidden bg-teal-950/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white border-2 border-cream-200 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl animate-pop relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeModal()" class="absolute top-5 right-5 w-9 h-9 rounded-full bg-cream-100 hover:bg-rose-100 text-slate-600 hover:text-rose-600 flex items-center justify-center transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="modal-content">
+                <!-- Dynamic Modal Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- TOAST NOTIFICATION (XP GAINED / ACHIEVEMENT UNLOCKED)                 -->
+    <!-- ===================================================================== -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT APPLICATION LOGIC                                          -->
+    <!-- ===================================================================== -->
+    <script>
+        // =========================================================================
+        // 1. DATA MATERI EDUKASI (SIRAH, KUIS, TOKOH, DAILY TRIVIA, RANKS)
+        // =========================================================================
+
+        const RANKS = [
+            { minXP: 0, title: "Pencari Ilmu", icon: "fa-seedling", desc: "Langkah awal menapaki jalan cahaya ilmu Islam." },
+            { minXP: 100, title: "Pelajar Tekun", icon: "fa-book-open-reader", desc: "Mulai memahami dasar-dasar sejarah dan teladan Nabi." },
+            { minXP: 250, title: "Penjelajah Sirah", icon: "fa-compass", desc: "Wawasan sejarah Islam dan kisah para sahabat semakin luas." },
+            { minXP: 450, title: "Cendekiawan Muda", icon: "fa-graduation-cap", desc: "Menguasai berbagai peristiwa penting dan hikmah peradaban." },
+            { minXP: 700, title: "Mahaguru Sejarah", icon: "fa-crown", desc: "Tingkat tertinggi! Teladan dalam semangat menuntut ilmu." }
+        ];
+
+        const SIRAH_TIMELINE = [
+            {
+                id: "s1",
+                year: "570 M (Tahun Gajah)",
+                title: "Kelahiran Nabi Muhammad ﷺ",
+                location: "Makkah Al-Mukarramah",
+                icon: "fa-star-and-crescent",
+                summary: "Nabi Muhammad ﷺ lahir pada hari Senin, 12 Rabiul Awal di Tahun Gajah. Ayahnya, Abdullah, wafat sebelum beliau lahir. Saat yang sama, pasukan bergajah Abrahah yang hendak menghancurkan Ka'bah dihancurkan Allah melalui burung Ababil.",
+                hikmah: "Allah menjaga rumah-Nya (Ka'bah) dan mempersiapkan kelahiran manusia paling mulia sebagai rahmat bagi seluruh alam (Rahmatan lil 'Alamin)."
+            },
+            {
+                id: "s2",
+                year: "610 M (Usia 40 Tahun)",
+                title: "Turunnya Wahyu Pertama di Gua Hira",
+                location: "Jabal Nur, Makkah",
+                icon: "fa-book-quran",
+                summary: "Saat berkhalwat (menyendiri untuk beribadah) di Gua Hira pada bulan Ramadan, Malaikat Jibril datang memeluk beliau dan menyampaikan wahyu pertama: Surah Al-'Alaq ayat 1-5 yang diawali perintah 'Iqra' (Bacalah).",
+                hikmah: "Peradaban Islam dibangun di atas fondasi ilmu pengetahuan, membaca, dan merenungi tanda-tanda kebesaran Allah."
+            },
+            {
+                id: "s3",
+                year: "613 M",
+                title: "Dakwah Terang-Terangan",
+                location: "Bukit Shafa, Makkah",
+                icon: "fa-bullhorn",
+                summary: "Setelah 3 tahun berdakwah secara sembunyi-sembunyi, turun perintah Allah agar Rasulullah ﷺ berdakwah secara terbuka. Beliau menyeru kaum Quraisy di Bukit Shafa untuk menyembah Allah Yang Maha Esa, yang kemudian memicu penentangan keras para pemuka Quraisy.",
+                hikmah: "Menyampaikan kebenaran membutuhkan keberanian, kesabaran, dan keteguhan hati meski menghadapi penolakan."
+            },
+            {
+                id: "s4",
+                year: "621 M",
+                title: "Peristiwa Agung Isra Mi'raj",
+                location: "Makkah - Yerusalem - Sidratul Muntaha",
+                icon: "fa-mosque",
+                summary: "Setelah melewati Tahun Kesedihan (wafatnya Khadijah RA dan Abu Thalib), Allah menghibur Rasulullah ﷺ dengan perjalanan malam dari Masjidil Haram ke Masjidil Aqsa (Isra), lalu naik ke Sidratul Muntaha (Mi'raj) untuk menerima perintah salat wajib 5 waktu.",
+                hikmah: "Salat adalah mi'raj-nya orang beriman—sarana komunikasi langsung seorang hamba dengan Allah di tengah ujian hidup."
+            },
+            {
+                id: "s5",
+                year: "622 M (1 Hijriah)",
+                title: "Hijrah ke Madinah Al-Munawwarah",
+                location: "Makkah menuju Yatsrib (Madinah)",
+                icon: "fa-route",
+                summary: "Atas perintah Allah, Rasulullah ﷺ bersama Abu Bakar Ash-Shiddiq berhijrah ke Madinah. Mereka sempat bersembunyi di Gua Tsur dari kejaran Quraisy. Di Madinah, beliau mempersaudarakan kaum Muhajirin dan Anshar serta menyusun Piagam Madinah.",
+                hikmah: "Hijrah mengajarkan perencanaan yang matang (ikhtiar), tawakal penuh kepada Allah, dan pentingnya persaudaraan dalam membangun masyarakat."
+            },
+            {
+                id: "s6",
+                year: "624 M (2 Hijriah)",
+                title: "Perang Badar Kubra",
+                location: "Lembah Badar",
+                icon: "fa-shield-halved",
+                summary: "Pertempuran besar pertama antara 313 pasukan Muslim melawan sekitar 1.000 pasukan Quraisy yang bersenjata lengkap. Dengan doa penuh harap Rasulullah ﷺ dan pertolongan malaikat dari Allah, kaum Muslimin meraih kemenangan gemilang.",
+                hikmah: "Kemenangan sejati tidak ditentukan oleh jumlah pasukan, melainkan oleh kekuatan iman, ketaatan, dan pertolongan Allah."
+            },
+            {
+                id: "s7",
+                year: "628 M (6 Hijriah)",
+                title: "Perjanjian Hudaibiyah",
+                location: "Hudaibiyah, dekat Makkah",
+                icon: "fa-handshake",
+                summary: "Rasulullah ﷺ dan para sahabat berniat melaksanakan umrah namun tertahan oleh Quraisy. Lahirlah Perjanjian Hudaibiyah yang berisi gencatan senjata selama 10 tahun. Meski terlihat merugikan di awal, Allah menyebutnya sebagai 'Kemenangan yang Nyata' karena dakwah Islam menyebar pesat dalam suasana damai.",
+                hikmah: "Perdamaian dan diplomasi yang bijaksana sering kali membuka pintu kemenangan jauh lebih besar daripada peperangan."
+            },
+            {
+                id: "s8",
+                year: "630 M (8 Hijriah)",
+                title: "Fathu Makkah (Pembebasan Makkah)",
+                location: "Makkah Al-Mukarramah",
+                icon: "fa-kaaba",
+                summary: "Setelah Quraisy melanggar Perjanjian Hudaibiyah, Rasulullah ﷺ memimpin 10.000 pasukan memasuki kota Makkah secara damai tanpa pertumpahan darah. Beliau membersihkan Ka'bah dari 360 berhala dan memberikan amnesti umum (pengampunan massal) kepada penduduk Makkah.",
+                hikmah: "Puncak kekuatan seorang mukmin adalah ketika ia mampu membalas keburukan di masa lalu dengan pemaafan yang tulus."
+            }
+        ];
+
+        const QUIZ_BANK = {
+            pemula: [
+                {
+                    q: "Pada tahun berapakah Nabi Muhammad ﷺ dilahirkan yang dikenal juga dengan sebutan Tahun Gajah?",
+                    options: ["570 Masehi", "610 Masehi", "622 Masehi", "632 Masehi"],
+                    answer: 0,
+                    explanation: "Nabi Muhammad ﷺ lahir pada 12 Rabiul Awal tahun 570 M, bertepatan dengan peristiwa penyerangan Ka'bah oleh pasukan bergajah Raja Abrahah."
+                },
+                {
+                    q: "Siapakah nama malaikat yang bertugas menyampaikan wahyu Allah kepada para Nabi dan Rasul?",
+                    options: ["Malaikat Mikail", "Malaikat Israfil", "Malaikat Jibril", "Malaikat Ridwan"],
+                    answer: 2,
+                    explanation: "Malaikat Jibril AS adalah pemimpin para malaikat yang bertugas menyampaikan wahyu dari Allah SWT kepada para Nabi."
+                },
+                {
+                    q: "Apa nama gua tempat Nabi Muhammad ﷺ menerima wahyu pertama kali?",
+                    options: ["Gua Tsur", "Gua Hira", "Gua Kahfi", "Gua Uhud"],
+                    answer: 1,
+                    explanation: "Wahyu pertama (Surah Al-'Alaq ayat 1-5) turun di Gua Hira yang terletak di Jabal Nur, Makkah."
+                },
+                {
+                    q: "Berapa jumlah Rukun Islam yang wajib diketahui oleh setiap Muslim?",
+                    options: ["4 Perkara", "5 Perkara", "6 Perkara", "7 Perkara"],
+                    answer: 1,
+                    explanation: "Rukun Islam ada 5: Syahadat, Salat, Zakat, Puasa Ramadan, dan Haji bagi yang mampu."
+                },
+                {
+                    q: "Siapakah sahabat setia yang menemani Nabi Muhammad ﷺ bersembunyi di Gua Tsur saat Hijrah?",
+                    options: ["Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib", "Abu Bakar Ash-Shiddiq"],
+                    answer: 3,
+                    explanation: "Abu Bakar Ash-Shiddiq RA menemani Rasulullah ﷺ dalam perjalanan hijrah dari Makkah ke Madinah, termasuk saat bersembunyi di Gua Tsur."
+                }
+            ],
+            menengah: [
+                {
+                    q: "Apa nama dokumen konstitusi tertulis pertama di dunia yang disusun Rasulullah ﷺ untuk mengatur kerukunan penduduk Madinah?",
+                    options: ["Perjanjian Hudaibiyah", "Piagam Madinah", "Bai'at Aqabah", "Fathu Makkah"],
+                    answer: 1,
+                    explanation: "Piagam Madinah (Shahifah Madinah) mengatur hak dan kewajiban kaum Muhajirin, Anshar, serta penduduk non-Muslim di Madinah secara adil."
+                },
+                {
+                    q: "Siapakah Khalifah kedua dalam Khulafaur Rasyidin yang mendapat gelar 'Al-Faruq' (pembeda antara yang haq dan batil)?",
+                    options: ["Abu Bakar Ash-Shiddiq", "Umar bin Khattab", "Utsman bin Affan", "Ali bin Abi Thalib"],
+                    answer: 1,
+                    explanation: "Umar bin Khattab RA diberi gelar Al-Faruq oleh Rasulullah ﷺ karena ketegasannya dalam membela kebenaran."
+                },
+                {
+                    q: "Pada peristiwa Isra Mi'raj, perintah ibadah apakah yang diterima langsung oleh Rasulullah ﷺ dari Allah SWT?",
+                    options: ["Puasa Ramadan", "Zakat Mal", "Salat Lima Waktu", "Ibadah Haji"],
+                    answer: 2,
+                    explanation: "Perintah salat fardu lima waktu diterima langsung oleh Nabi Muhammad ﷺ saat peristiwa Mi'raj ke Sidratul Muntaha."
+                },
+                {
+                    q: "Siapakah muadzin pertama dalam sejarah Islam yang memiliki suara merdu dan teguh mempertahankan imannya meski disiksa?",
+                    options: ["Bilal bin Rabah", "Salman Al-Farisi", "Zaid bin Tsabit", "Khalid bin Walid"],
+                    answer: 0,
+                    explanation: "Bilal bin Rabah RA adalah sahabat asal Habasyah yang ditunjuk Rasulullah ﷺ sebagai muadzin pertama di Masjid Nabawi."
+                },
+                {
+                    q: "Apa sebutan bagi penduduk asli kota Madinah yang menyambut dan menolong kaum Muslimin dari Makkah?",
+                    options: ["Kaum Muhajirin", "Kaum Anshar", "Kaum Quraisy", "Kaum Hawariyyun"],
+                    answer: 1,
+                    explanation: "Kaum Anshar berarti 'para penolong', yaitu penduduk Madinah (suku Aus dan Khazraj) yang menolong kaum Muhajirin."
+                }
+            ],
+            ahli: [
+                {
+                    q: "Siapakah ilmuwan Muslim abad ke-9 yang dikenal sebagai 'Bapak Aljabar' dan namanya menjadi asal kata 'Algoritma'?",
+                    options: ["Ibnu Sina", "Al-Khawarizmi", "Al-Biruni", "Ibnu Al-Haitham"],
+                    answer: 1,
+                    explanation: "Muhammad bin Musa Al-Khawarizmi menulis kitab 'Al-Jabr wal-Muqabalah' yang menjadi dasar ilmu Aljabar dan Algoritma modern."
+                },
+                {
+                    q: "Siapakah sahabat yang ditugaskan memimpin tim penulisan dan pembukuan mushaf Al-Qur'an pada masa Khalifah Abu Bakar dan Utsman?",
+                    options: ["Abdullah bin Mas'ud", "Zaid bin Tsabit", "Mu'adz bin Jabal", "Abu Hurairah"],
+                    answer: 1,
+                    explanation: "Zaid bin Tsabit RA adalah sekretaris wahyu Rasulullah ﷺ yang dipercaya memimpin kodifikasi mushaf Al-Qur'an."
+                },
+                {
+                    q: "Dalam Perang Khandaq (Perang Parit), siapakah sahabat asal Persia yang mengusulkan strategi menggali parit di utara Madinah?",
+                    options: ["Salman Al-Farisi", "Shuhaib Ar-Rumi", "Ammar bin Yasir", "Miqdad bin Aswad"],
+                    answer: 0,
+                    explanation: "Salman Al-Farisi RA mengusulkan strategi penggalian parit (Khandaq) yang belum pernah dikenal bangsa Arab sebelumnya."
+                },
+                {
+                    q: "Apa judul kitab ensiklopedia kedokteran karya Ibnu Sina yang menjadi rujukan utama universitas di Eropa selama berabad-abad?",
+                    options: ["Al-Qanun fi At-Tibb", "Kitab Al-Manazir", "Ihya Ulumuddin", "Muqaddimah"],
+                    answer: 0,
+                    explanation: "'Al-Qanun fi At-Tibb' (The Canon of Medicine) karya Ibnu Sina menjadi buku teks standar ilmu kedokteran hingga abad ke-17."
+                },
+                {
+                    q: "Berapa lama masa gencatan senjata yang disepakati dalam Perjanjian Hudaibiyah pada tahun 6 Hijriah?",
+                    options: ["3 Tahun", "5 Tahun", "10 Tahun", "15 Tahun"],
+                    answer: 2,
+                    explanation: "Perjanjian Hudaibiyah menyepakati gencatan senjata selama 10 tahun antara kaum Muslimin Madinah dan Quraisy Makkah."
+                }
+            ]
+        };
+
+        const ENCYCLOPEDIA_TOKOH = [
+            {
+                id: "t1",
+                name: "Khadijah binti Khuwailid RA",
+                category: "Sahabat",
+                era: "555 – 619 M",
+                title: "Ummul Mukminin & Pendukung Pertama Dakwah",
+                icon: "fa-heart",
+                color: "amber",
+                bio: "Istri pertama Rasulullah ﷺ sekaligus orang pertama yang beriman kepada risalah Islam. Beliau adalah saudagar sukses dan terpandang di Makkah yang mengorbankan seluruh harta dan jiwanya untuk menenangkan serta mendukung dakwah Nabi ﷺ di masa-masa tersulit.",
+                quote: "Demi Allah, Allah tidak akan pernah menghinakanmu selamanya, karena engkau selalu menyambung silaturahmi dan menolong orang lemah."
+            },
+            {
+                id: "t2",
+                name: "Umar bin Khattab RA",
+                category: "Sahabat",
+                era: "584 – 644 M",
+                title: "Al-Faruq & Khalifah Pembangun Peradaban",
+                icon: "fa-scale-balanced",
+                color: "teal",
+                bio: "Khalifah kedua yang dikenal dengan keadilan, ketegasan, dan kesederhanaannya. Pada masa kepemimpinannya, wilayah Islam meluas hingga Persia dan Syam, kalender Hijriah ditetapkan, serta sistem administrasi negara dan jaminan sosial rakyat dibangun secara modern.",
+                quote: "Hisablah (evaluasilah) diri kalian sebelum kalian dihisab pada hari kiamat kelak."
+            },
+            {
+                id: "t3",
+                name: "Al-Khawarizmi",
+                category: "Ilmuwan",
+                era: "780 – 850 M",
+                title: "Bapak Aljabar & Penemu Konsep Algoritma",
+                icon: "fa-square-root-variable",
+                color: "teal",
+                bio: "Ilmuwan besar dari Baitul Hikmah Baghdad. Karya monumentalnya 'Al-Kitab al-Mukhtashar fi Hisab al-Jabr wal-Muqabalah' melahirkan ilmu Aljabar. Ia juga memperkenalkan sistem angka Hindu-Arab (termasuk angka nol) ke dunia Barat.",
+                quote: "Ketika aku merenungkan apa yang dibutuhkan manusia dalam berhitung, aku menemukan bahwa semuanya adalah angka."
+            },
+            {
+                id: "t4",
+                name: "Ibnu Sina (Avicenna)",
+                category: "Ilmuwan",
+                era: "980 – 1037 M",
+                title: "Bapak Kedokteran Modern & Filsuf Muslim",
+                icon: "fa-staff-snake",
+                color: "amber",
+                bio: "Seorang jenius yang telah menghafal Al-Qur'an di usia 10 tahun dan menguasai ilmu kedokteran pada usia 16 tahun. Bukunya 'Al-Qanun fi At-Tibb' menjelaskan cara kerja penyakit menular, karantina medis, dan farmakologi modern.",
+                quote: "Pengetahuan tentang segala sesuatu, karena semua hal memiliki sebab, tidak akan lengkap tanpa mengetahui sebab-sebabnya."
+            },
+            {
+                id: "t5",
+                name: "Fatimah Al-Fihri",
+                category: "Ilmuwan",
+                era: "800 – 880 M",
+                title: "Pendiri Universitas Pertama di Dunia",
+                icon: "fa-building-columns",
+                color: "amber",
+                bio: "Wanita muslimah dermawan asal Kairouan yang menggunakan warisannya untuk membangun Masjid dan Universitas Al-Qarawiyyin di Fez, Maroko pada tahun 859 M. Lembaga ini diakui UNESCO dan Guinness World Records sebagai universitas tertua yang masih beroperasi.",
+                quote: "Membangun pusat ilmu adalah sedekah jariyah yang cahayanya menerangi generasi lintas zaman."
+            },
+            {
+                id: "t6",
+                name: "Ali bin Abi Thalib RA",
+                category: "Sahabat",
+                era: "601 – 661 M",
+                title: "Pintu Gerbang Ilmu & Pemuda Pemberani",
+                icon: "fa-shield",
+                color: "teal",
+                bio: "Sepupu sekaligus menantu Rasulullah ﷺ yang memeluk Islam sejak usia anak-anak. Beliau terkenal karena kecerdasan luar biasa dalam hukum dan sastra Arab, keberaniannya di medan juang, serta kerelaannya tidur di ranjang Nabi ﷺ saat malam hijrah.",
+                quote: "Ilmu itu lebih baik daripada harta. Ilmu menjagamu, sedangkan engkau yang harus menjaga harta."
+            }
+        ];
+
+        const DAILY_TRIVIA_POOL = [
+            {
+                q: "Bulan apakah dalam kalender Hijriah yang menjadi waktu diturunkannya Al-Qur'an pertama kali (Nuzulul Qur'an)?",
+                options: ["Muharram", "Rajab", "Ramadan", "Syawal"],
+                answer: 2,
+                info: "Benar! Al-Qur'an diturunkan pada bulan suci Ramadan (Surah Al-Baqarah: 185)."
+            },
+            {
+                q: "Siapakah nama ibu kandung Nabi Muhammad ﷺ?",
+                options: ["Halimah As-Sa'diyah", "Aminah binti Wahb", "Fatimah binti Asad", "Khadijah binti Khuwailid"],
+                answer: 1,
+                info: "Tepat sekali! Ibu kandung Rasulullah ﷺ bernama Siti Aminah binti Wahb, sedangkan Halimah As-Sa'diyah adalah ibu susuannya."
+            },
+            {
+                q: "Apa nama masjid pertama yang dibangun oleh Nabi Muhammad ﷺ setibanya di pinggiran kota Madinah?",
+                options: ["Masjid Nabawi", "Masjid Quba", "Masjid Qiblatain", "Masjidil Haram"],
+                answer: 1,
+                info: "MasyaAllah, benar! Masjid Quba adalah masjid pertama yang fondasinya diletakkan langsung oleh Rasulullah ﷺ saat hijrah."
+            },
+            {
+                q: "Berapa jumlah surah yang terdapat di dalam mushaf Al-Qur'an?",
+                options: ["110 Surah", "112 Surah", "114 Surah", "120 Surah"],
+                answer: 2,
+                info: "Benar! Al-Qur'an terdiri dari 30 Juz dan 114 Surah, diawali Surah Al-Fatihah dan diakhiri Surah An-Nas."
+            }
+        ];
+
+        // =========================================================================
+        // 2. STATE MANAGEMENT & LOCALSTORAGE
+        // =========================================================================
+        const STORAGE_KEY = "sirahquest_user_data_v1";
+
+        let userData = {
+            xp: 0,
+            streak: 0,
+            lastActiveDate: null,
+            dailyCompletedDate: null,
+            quizzesCompleted: 0,
+            readSirahIds: [],
+            unlockedTokohIds: []
+        };
+
+        function loadUserData() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    userData = { ...userData, ...JSON.parse(saved) };
+                }
+                checkStreakValidity();
+            } catch (e) {
+                console.error("Gagal memuat LocalStorage:", e);
+            }
+        }
+
+        function saveUserData() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+                updateAllUI();
+            } catch (e) {
+                console.error("Gagal menyimpan ke LocalStorage:", e);
+            }
+        }
+
+        function getTodayString() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+
+        function checkStreakValidity() {
+            if (!userData.lastActiveDate) return;
+            const today = new Date(getTodayString());
+            const last = new Date(userData.lastActiveDate);
+            const diffDays = Math.floor((today - last) / (1000 * 60 * 60 * 24));
+            if (diffDays > 1) {
+                // Streak terputus jika melewatkan lebih dari 1 hari
+                userData.streak = 0;
+                saveUserData();
+            }
+        }
+
+        function addXP(amount, reason = "") {
+            const oldRank = getCurrentRank(userData.xp);
+            userData.xp += amount;
+            const newRank = getCurrentRank(userData.xp);
+
+            showToast(`+${amount} XP! ${reason}`, "xp");
+
+            if (newRank.title !== oldRank.title) {
+                setTimeout(() => {
+                    showToast(`Selamat! Naik Gelar: ${newRank.title}!`, "rank");
+                }, 600);
+            }
+            saveUserData();
+        }
+
+        function getCurrentRank(xp) {
+            let current = RANKS[0];
+            for (let i = 0; i < RANKS.length; i++) {
+                if (xp >= RANKS[i].minXP) {
+                    current = RANKS[i];
+                }
+            }
+            return current;
+        }
+
+        function getNextRank(xp) {
+            for (let i = 0; i < RANKS.length; i++) {
+                if (xp < RANKS[i].minXP) {
+                    return RANKS[i];
+                }
+            }
+            return null;
+        }
+
+        // =========================================================================
+        // 3. UI RENDERING & NAVIGATION
+        // =========================================================================
+
+        function switchTab(tabName) {
+            // Sembunyikan semua tab
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Tampilkan tab pilihan
+            document.getElementById(`view-${tabName}`).classList.remove('hidden');
+
+            // Update style tombol navigasi
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('bg-teal-600', 'text-white', 'shadow-playful-teal');
+                btn.classList.add('bg-white', 'text-slate-600', 'border', 'border-cream-200');
+            });
+
+            const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-white', 'text-slate-600', 'border', 'border-cream-200');
+                activeBtn.classList.add('bg-teal-600', 'text-white', 'shadow-playful-teal');
+            }
+
+            if (tabName === 'kuis') {
+                // Pastikan jika tidak sedang kuis aktif, tampilkan lobby
+                if (document.getElementById('quiz-arena').classList.contains('hidden') &&
+                    document.getElementById('quiz-result').classList.contains('hidden')) {
+                    resetQuizView();
+                }
+            }
+        }
+
+        function updateAllUI() {
+            const rank = getCurrentRank(userData.xp);
+            const nextRank = getNextRank(userData.xp);
+
+            // Navbar Stats
+            document.getElementById('nav-streak').textContent = userData.streak;
+            document.getElementById('nav-xp').textContent = userData.xp;
+            document.getElementById('nav-rank-title').textContent = rank.title;
+            document.getElementById('nav-rank-icon').innerHTML = `<i class="fa-solid ${rank.icon}"></i>`;
+
+            // Home Rank Card
+            document.getElementById('home-rank-title').textContent = rank.title;
+            document.getElementById('home-rank-badge').innerHTML = `<i class="fa-solid ${rank.icon}"></i>`;
+
+            if (nextRank) {
+                const needed = nextRank.minXP - userData.xp;
+                const range = nextRank.minXP - rank.minXP;
+                const currentInLevel = userData.xp - rank.minXP;
+                const percent = Math.min(100, Math.max(5, Math.round((currentInLevel / range) * 100)));
+
+                document.getElementById('home-rank-next').textContent = `Butuh ${needed} XP lagi menuju "${nextRank.title}"`;
+                document.getElementById('home-xp-progress-text').textContent = `${userData.xp} / ${nextRank.minXP} XP`;
+                document.getElementById('home-xp-bar').style.width = `${percent}%`;
+            } else {
+                document.getElementById('home-rank-next').textContent = "Kamu telah mencapai gelar tertinggi!";
+                document.getElementById('home-xp-progress-text').textContent = `${userData.xp} XP (Maksimal)`;
+                document.getElementById('home-xp-bar').style.width = `100%`;
+            }
+
+            // Mini Stats
+            document.getElementById('stat-quizzes').textContent = userData.quizzesCompleted;
+            document.getElementById('stat-sirah').textContent = `${userData.readSirahIds.length}/${SIRAH_TIMELINE.length}`;
+            document.getElementById('stat-tokoh').textContent = `${userData.unlockedTokohIds.length}/${ENCYCLOPEDIA_TOKOH.length}`;
+            document.getElementById('timeline-progress-label').textContent = `${userData.readSirahIds.length} / ${SIRAH_TIMELINE.length}`;
+
+            renderTimeline();
+            renderTokoh(currentTokohFilter);
+        }
+
+        // =========================================================================
+        // 4. DAILY TRIVIA LOGIC
+        // =========================================================================
+        function initDailyTrivia() {
+            const todayStr = getTodayString();
+            // Pilih soal harian secara deterministik berdasarkan tanggal hari ini
+            const dayNumber = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+            const trivia = DAILY_TRIVIA_POOL[dayNumber % DAILY_TRIVIA_POOL.length];
+
+            const qEl = document.getElementById('daily-question');
+            const optEl = document.getElementById('daily-options');
+            const fbEl = document.getElementById('daily-feedback');
+            const badgeEl = document.getElementById('daily-status-badge');
+
+            qEl.textContent = trivia.q;
+            optEl.innerHTML = '';
+
+            const isAlreadyDone = userData.dailyCompletedDate === todayStr;
+
+            if (isAlreadyDone) {
+                badgeEl.innerHTML = `<i class="fa-solid fa-circle-check text-teal-600 mr-1"></i> Selesai Hari Ini`;
+                badgeEl.className = "self-start md:self-center px-3.5 py-1.5 rounded-xl bg-teal-100 border border-teal-300 text-xs font-extrabold text-teal-800";
+            }
+
+            trivia.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "text-left p-3.5 rounded-xl border-2 font-bold text-sm transition flex items-center justify-between ";
+                
+                if (isAlreadyDone) {
+                    btn.disabled = true;
+                    if (idx === trivia.answer) {
+                        btn.className += "bg-teal-50 border-teal-500 text-teal-900";
+                        btn.innerHTML = `<span>${optText}</span> <i class="fa-solid fa-check-circle text-teal-600"></i>`;
+                    } else {
+                        btn.className += "bg-slate-50 border-slate-200 text-slate-400";
+                        btn.innerHTML = `<span>${optText}</span>`;
+                    }
+                } else {
+                    btn.className += "bg-cream-50 hover:bg-amber-100/60 border-cream-200 hover:border-amber-400 text-slate-700 btn-game";
+                    btn.innerHTML = `<span>${optText}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
+                    btn.onclick = () => handleDailyAnswer(idx, trivia);
+                }
+                optEl.appendChild(btn);
+            });
+
+            if (isAlreadyDone) {
+                fbEl.classList.remove('hidden');
+                fbEl.className = "mt-4 p-4 rounded-xl text-sm font-medium bg-teal-50 border border-teal-200 text-teal-900";
+                fbEl.innerHTML = `<strong>Alhamdulillah!</strong> Kamu sudah menyelesaikan Tantangan Harian hari ini. ${trivia.info} Kembali lagi besok untuk menjaga streak-mu!`;
+            }
+        }
+
+        function handleDailyAnswer(selectedIndex, trivia) {
+            const todayStr = getTodayString();
+            const isCorrect = selectedIndex === trivia.answer;
+            const fbEl = document.getElementById('daily-feedback');
+
+            // Update Streak
+            if (userData.lastActiveDate !== todayStr) {
+                userData.streak += 1;
+                userData.lastActiveDate = todayStr;
+            }
+            userData.dailyCompletedDate = todayStr;
+
+            if (isCorrect) {
+                addXP(30, "Tantangan Harian Benar!");
+                fbEl.className = "mt-4 p-4 rounded-xl text-sm font-medium bg-teal-50 border border-teal-300 text-teal-900";
+                fbEl.innerHTML = `<i class="fa-solid fa-sparkles text-amber-500 mr-1"></i> <strong>Jawaban Tepat (+30 XP)!</strong> ${trivia.info}`;
+            } else {
+                addXP(10, "Partisipasi Tantangan Harian");
+                fbEl.className = "mt-4 p-4 rounded-xl text-sm font-medium bg-amber-100 border border-amber-300 text-amber-950";
+                fbEl.innerHTML = `<i class="fa-solid fa-lightbulb text-amber-600 mr-1"></i> <strong>Hampir Tepat (+10 XP Semangat)!</strong> Jawaban yang benar adalah <strong>${trivia.options[trivia.answer]}</strong>. ${trivia.info}`;
+            }
+
+            fbEl.classList.remove('hidden');
+            saveUserData();
+            initDailyTrivia();
+        }
+
+        // =========================================================================
+        // 5. TIMELINE SIRAH NABAWIYAH LOGIC
+        // =========================================================================
+        function renderTimeline() {
+            const container = document.getElementById('timeline-list');
+            container.innerHTML = '';
+
+            SIRAH_TIMELINE.forEach((item, index) => {
+                const isRead = userData.readSirahIds.includes(item.id);
+                const card = document.createElement('div');
+                card.className = "relative group";
+
+                card.innerHTML = `
+                    <!-- Dot Marker on Timeline Line -->
+                    <div class="absolute -left-6 sm:-left-10 top-5 w-6 h-6 sm:w-8 sm:h-8 rounded-full border-4 border-cream-50 flex items-center justify-center text-xs shadow-sm transition ${isRead ? 'bg-teal-600 text-white' : 'bg-amber-400 text-teal-950'}">
+                        <i class="fa-solid ${isRead ? 'fa-check' : 'fa-star'}"></i>
+                    </div>
+
+                    <!-- Event Card -->
+                    <div onclick="openSirahDetail('${item.id}')" class="cursor-pointer bg-white hover:bg-teal-50/40 border-2 ${isRead ? 'border-teal-200' : 'border-cream-200 hover:border-amber-300'} rounded-3xl p-5 sm:p-6 shadow-playful-sm transition">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+                            <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs">
+                                <i class="fa-regular fa-calendar mr-1"></i> ${item.year}
+                            </span>
+                            <span class="text-xs font-extrabold ${isRead ? 'text-teal-600' : 'text-amber-600'}">
+                                ${isRead ? '<i class="fa-solid fa-circle-check mr-1"></i> Sudah Dipelajari' : '<i class="fa-solid fa-gift mr-1"></i> +15 XP'}
+                            </span>
+                        </div>
+
+                        <div class="flex items-start justify-between gap-4">
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-extrabold text-teal-950 group-hover:text-teal-700 transition">${item.title}</h3>
+                                <p class="text-xs font-semibold text-slate-400 mt-0.5"><i class="fa-solid fa-location-dot text-teal-500 mr-1"></i> ${item.location}</p>
+                                <p class="text-sm text-slate-600 mt-3 line-clamp-2 leading-relaxed">${item.summary}</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl shrink-0 hidden sm:flex">
+                                <i class="fa-solid ${item.icon}"></i>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 pt-3 border-t border-cream-100 flex items-center justify-between text-xs font-bold text-teal-700">
+                            <span>Baca kisah lengkap & hikmah peristiwa</span>
+                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition"></i>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function openSirahDetail(id) {
+            const item = SIRAH_TIMELINE.find(s => s.id === id);
+            if (!item) return;
+
+            let gainedBonus = false;
+            if (!userData.readSirahIds.includes(id)) {
+                userData.readSirahIds.push(id);
+                addXP(15, `Mempelajari ${item.title}`);
+                gainedBonus = true;
+            }
+
+            const modalHtml = `
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-xl shrink-0">
+                            <i class="fa-solid ${item.icon}"></i>
+                        </div>
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 font-extrabold text-xs">${item.year}</span>
+                            <h3 class="text-xl font-extrabold text-teal-950 mt-1">${item.title}</h3>
+                        </div>
+                    </div>
+
+                    <div class="text-xs font-bold text-slate-500 bg-cream-50 px-3 py-2 rounded-xl border border-cream-200">
+                        <i class="fa-solid fa-location-dot text-teal-600 mr-1.5"></i> Lokasi: ${item.location}
+                    </div>
+
+                    <div>
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-teal-700 mb-1.5">Ringkasan Peristiwa</h4>
+                        <p class="text-sm text-slate-700 leading-relaxed">${item.summary}</p>
+                    </div>
+
+                    <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-amber-800 mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb text-amber-500"></i> Hikmah & Pelajaran
+                        </h4>
+                        <p class="text-sm text-amber-950 font-medium leading-relaxed">${item.hikmah}</p>
+                    </div>
+
+                    ${gainedBonus ? `
+                        <div class="text-center text-xs font-extrabold text-teal-700 bg-teal-50 py-2 rounded-xl">
+                            <i class="fa-solid fa-star text-amber-400 mr-1"></i> Kamu mendapatkan +15 XP karena menyelesaikan bacaan ini!
+                        </div>
+                    ` : ''}
+
+                    <button onclick="closeModal()" class="btn-game w-full py-3 rounded-2xl bg-teal-600 text-white font-extrabold text-sm shadow-playful-teal">
+                        Tutup & Lanjutkan Jelajah
+                    </button>
+                </div>
+            `;
+            openModal(modalHtml);
+        }
+
+        // =========================================================================
+        // 6. QUIZ ENGINE LOGIC
+        // =========================================================================
+        let activeQuiz = {
+            level: 'pemula',
+            questions: [],
+            currentIndex: 0,
+            scoreXP: 0,
+            correctCount: 0,
+            xpPerQuestion: 10,
+            answered: false
+        };
+
+        function startQuiz(level) {
+            const xpMap = { pemula: 10, menengah: 20, ahli: 30 };
+            // Acak urutan soal
+            const pool = [...QUIZ_BANK[level]].sort(() => Math.random() - 0.5);
+
+            activeQuiz = {
+                level: level,
+                questions: pool,
+                currentIndex: 0,
+                scoreXP: 0,
+                correctCount: 0,
+                xpPerQuestion: xpMap[level],
+                answered: false
+            };
+
+            document.getElementById('quiz-lobby').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-arena').classList.remove('hidden');
+
+            document.getElementById('quiz-badge-level').textContent = level.toUpperCase();
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const qObj = activeQuiz.questions[activeQuiz.currentIndex];
+            const total = activeQuiz.questions.length;
+            activeQuiz.answered = false;
+
+            document.getElementById('quiz-counter').textContent = `Soal ${activeQuiz.currentIndex + 1} / ${total}`;
+            document.getElementById('quiz-current-score').textContent = activeQuiz.scoreXP;
+            document.getElementById('quiz-progress-bar').style.width = `${((activeQuiz.currentIndex + 1) / total) * 100}%`;
+            document.getElementById('quiz-question-text').textContent = qObj.q;
+
+            const expBox = document.getElementById('quiz-explanation-box');
+            expBox.classList.add('hidden');
+
+            const choicesContainer = document.getElementById('quiz-choices-container');
+            choicesContainer.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            qObj.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "quiz-choice-btn w-full text-left p-4 rounded-2xl border-2 border-cream-200 bg-cream-50 hover:bg-teal-50 hover:border-teal-400 font-bold text-sm sm:text-base text-slate-800 transition flex items-center gap-3 btn-game";
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl bg-white border border-cream-200 flex items-center justify-center font-extrabold text-teal-700 shrink-0">${letters[idx]}</span>
+                    <span class="flex-grow">${opt}</span>
+                `;
+                btn.onclick = () => submitQuizAnswer(idx);
+                choicesContainer.appendChild(btn);
+            });
+        }
+
+        function submitQuizAnswer(selectedIdx) {
+            if (activeQuiz.answered) return;
+            activeQuiz.answered = true;
+
+            const qObj = activeQuiz.questions[activeQuiz.currentIndex];
+            const isCorrect = selectedIdx === qObj.answer;
+            const buttons = document.querySelectorAll('.quiz-choice-btn');
+
+            buttons.forEach((btn, idx) => {
+                btn.disabled = true;
+                btn.classList.remove('btn-game', 'hover:bg-teal-50', 'hover:border-teal-400');
+
+                if (idx === qObj.answer) {
+                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-teal-500 bg-teal-50 font-bold text-sm sm:text-base text-teal-950 flex items-center gap-3";
+                    btn.innerHTML += `<i class="fa-solid fa-circle-check text-teal-600 text-lg"></i>`;
+                } else if (idx === selectedIdx && !isCorrect) {
+                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-rose-400 bg-rose-50 font-bold text-sm sm:text-base text-rose-900 flex items-center gap-3";
+                    btn.innerHTML += `<i class="fa-solid fa-circle-xmark text-rose-500 text-lg"></i>`;
+                } else {
+                    btn.className = "w-full text-left p-4 rounded-2xl border-2 border-slate-100 bg-slate-50 font-medium text-sm sm:text-base text-slate-400 flex items-center gap-3";
+                }
+            });
+
+            const expBox = document.getElementById('quiz-explanation-box');
+            const expIcon = document.getElementById('quiz-exp-icon');
+            const expTitle = document.getElementById('quiz-exp-title');
+            const expText = document.getElementById('quiz-exp-text');
+
+            expBox.classList.remove('hidden');
+
+            if (isCorrect) {
+                activeQuiz.scoreXP += activeQuiz.xpPerQuestion;
+                activeQuiz.correctCount += 1;
+                document.getElementById('quiz-current-score').textContent = activeQuiz.scoreXP;
+
+                expBox.className = "mt-6 p-4 sm:p-5 rounded-2xl border-2 border-teal-300 bg-teal-50/80 text-teal-950 animate-pop";
+                expIcon.className = "w-8 h-8 rounded-full bg-teal-600 flex items-center justify-center shrink-0 mt-0.5 text-white";
+                expIcon.innerHTML = `<i class="fa-solid fa-check"></i>`;
+                expTitle.textContent = `MasyaAllah, Benar! (+${activeQuiz.xpPerQuestion} XP)`;
+            } else {
+                expBox.className = "mt-6 p-4 sm:p-5 rounded-2xl border-2 border-amber-300 bg-amber-50 text-amber-950 animate-pop";
+                expIcon.className = "w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center shrink-0 mt-0.5 text-white";
+                expIcon.innerHTML = `<i class="fa-solid fa-info"></i>`;
+                expTitle.textContent = "Kurang Tepat, Mari Pelajari Penjelasannya!";
+            }
+
+            expText.textContent = qObj.explanation;
+
+            const nextBtn = document.getElementById('quiz-next-btn');
+            if (activeQuiz.currentIndex === activeQuiz.questions.length - 1) {
+                nextBtn.innerHTML = `Lihat Hasil Kuis <i class="fa-solid fa-flag-checkered ml-1"></i>`;
+            } else {
+                nextBtn.innerHTML = `Soal Berikutnya <i class="fa-solid fa-arrow-right ml-1"></i>`;
+            }
+        }
+
+        function nextQuizQuestion() {
+            if (activeQuiz.currentIndex < activeQuiz.questions.length - 1) {
+                activeQuiz.currentIndex++;
+                renderQuizQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function finishQuiz() {
+            document.getElementById('quiz-arena').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+
+            userData.quizzesCompleted += 1;
+            if (activeQuiz.scoreXP > 0) {
+                addXP(activeQuiz.scoreXP, `Menyelesaikan Kuis ${activeQuiz.level.toUpperCase()}`);
+            } else {
+                saveUserData();
+            }
+
+            document.getElementById('quiz-result-correct').textContent = `${activeQuiz.correctCount} / ${activeQuiz.questions.length}`;
+            document.getElementById('quiz-result-xp').textContent = `+${activeQuiz.scoreXP} XP`;
+        }
+
+        function exitQuiz() {
+            resetQuizView();
+        }
+
+        function resetQuizView() {
+            document.getElementById('quiz-arena').classList.add('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-lobby').classList.remove('hidden');
+        }
+
+        // =========================================================================
+        // 7. ENSIKLOPEDIA TOKOH LOGIC
+        // =========================================================================
+        let currentTokohFilter = 'all';
+
+        function filterTokoh(category) {
+            currentTokohFilter = category;
+            document.querySelectorAll('.filter-tokoh-btn').forEach(btn => {
+                btn.className = "filter-tokoh-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-cream-100 text-slate-700 hover:bg-teal-50 transition";
+            });
+            const activeBtn = document.getElementById(`filter-${category}`);
+            if (activeBtn) {
+                activeBtn.className = "filter-tokoh-btn px-3.5 py-2 rounded-xl text-xs font-extrabold bg-teal-600 text-white transition";
+            }
+            renderTokoh(category);
+        }
+
+        function renderTokoh(category = 'all') {
+            const grid = document.getElementById('tokoh-grid');
+            grid.innerHTML = '';
+
+            const filtered = category === 'all'
+                ? ENCYCLOPEDIA_TOKOH
+                : ENCYCLOPEDIA_TOKOH.filter(t => t.category === category);
+
+            filtered.forEach(tokoh => {
+                const isUnlocked = userData.unlockedTokohIds.includes(tokoh.id);
+                const isAmber = tokoh.color === 'amber';
+
+                const card = document.createElement('div');
+                card.className = `bg-white border-2 ${isUnlocked ? 'border-teal-200' : 'border-cream-200'} rounded-3xl p-6 shadow-playful flex flex-col justify-between transition hover:-translate-y-1`;
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="px-3 py-1 rounded-full text-xs font-extrabold ${isAmber ? 'bg-amber-100 text-amber-800' : 'bg-teal-100 text-teal-800'}">
+                                ${tokoh.category}
+                            </span>
+                            <span class="text-xs font-bold ${isUnlocked ? 'text-teal-600' : 'text-amber-600'}">
+                                ${isUnlocked ? '<i class="fa-solid fa-lock-open mr-1"></i> Terbuka' : '<i class="fa-solid fa-lock mr-1"></i> +15 XP'}
+                            </span>
+                        </div>
+
+                        <div class="w-14 h-14 rounded-2xl ${isAmber ? 'bg-amber-100 text-amber-600' : 'bg-teal-100 text-teal-700'} flex items-center justify-center text-2xl mb-4">
+                            <i class="fa-solid ${tokoh.icon}"></i>
+                        </div>
+
+                        <h3 class="text-lg font-extrabold text-teal-950">${tokoh.name}</h3>
+                        <p class="text-xs font-bold text-slate-400 mt-0.5">${tokoh.era}</p>
+                        <p class="text-xs font-semibold text-teal-700 mt-2">${tokoh.title}</p>
+                    </div>
+
+                    <button onclick="openTokohDetail('${tokoh.id}')" class="btn-game mt-5 w-full py-2.5 rounded-2xl font-extrabold text-xs ${isUnlocked ? 'bg-cream-100 hover:bg-cream-200 text-teal-900' : 'bg-teal-600 hover:bg-teal-500 text-white shadow-playful-teal'}">
+                        ${isUnlocked ? 'Baca Profil Lengkap' : 'Buka Kartu Profil (+15 XP)'}
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openTokohDetail(id) {
+            const tokoh = ENCYCLOPEDIA_TOKOH.find(t => t.id === id);
+            if (!tokoh) return;
+
+            let newlyUnlocked = false;
+            if (!userData.unlockedTokohIds.includes(id)) {
+                userData.unlockedTokohIds.push(id);
+                addXP(15, `Membuka Profil ${tokoh.name}`);
+                newlyUnlocked = true;
+            }
+
+            const modalHtml = `
+                <div class="space-y-4">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl shrink-0">
+                            <i class="fa-solid ${tokoh.icon}"></i>
+                        </div>
+                        <div>
+                            <span class="px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 font-extrabold text-xs">${tokoh.category} • ${tokoh.era}</span>
+                            <h3 class="text-xl font-extrabold text-teal-950 mt-1">${tokoh.name}</h3>
+                            <p class="text-xs font-bold text-amber-600">${tokoh.title}</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-cream-50 border border-cream-200 rounded-2xl p-4">
+                        <h4 class="text-xs font-extrabold uppercase tracking-wider text-teal-700 mb-1.5">Biografi & Kontribusi</h4>
+                        <p class="text-sm text-slate-700 leading-relaxed">${tokoh.bio}</p>
+                    </div>
+
+                    <div class="bg-teal-900 text-white rounded-2xl p-4 relative overflow-hidden">
+                        <i class="fa-solid fa-quote-right absolute right-3 bottom-2 text-4xl text-white/10"></i>
+                        <p class="text-xs font-bold text-amber-300 uppercase tracking-wider mb-1">Untaian Hikmah</p>
+                        <p class="text-sm italic leading-relaxed">"${tokoh.quote}"</p>
+                    </div>
+
+                    ${newlyUnlocked ? `
+                        <div class="text-center text-xs font-extrabold text-teal-700 bg-teal-50 py-2 rounded-xl">
+                            <i class="fa-solid fa-sparkles text-amber-400 mr-1"></i> Kartu tokoh terbuka! Kamu meraih +15 XP!
+                        </div>
+                    ` : ''}
+
+                    <button onclick="closeModal()" class="btn-game w-full py-3 rounded-2xl bg-teal-600 text-white font-extrabold text-sm shadow-playful-teal">
+                        Tutup Kartu
+                    </button>
+                </div>
+            `;
+            openModal(modalHtml);
+        }
+
+        // =========================================================================
+        // 8. MODAL, PROFILE BADGES & TOAST HELPERS
+        // =========================================================================
+        function openProfileModal() {
+            const currentRank = getCurrentRank(userData.xp);
+
+            const ranksHtml = RANKS.map(r => {
+                const achieved = userData.xp >= r.minXP;
+                const isCurrent = r.title === currentRank.title;
+                return `
+                    <div class="flex items-center gap-3 p-3 rounded-2xl border-2 ${isCurrent ? 'border-amber-400 bg-amber-50' : achieved ? 'border-teal-200 bg-teal-50/40' : 'border-slate-100 bg-slate-50 opacity-60'}">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0 ${achieved ? 'bg-teal-600 text-white' : 'bg-slate-200 text-slate-400'}">
+                            <i class="fa-solid ${r.icon}"></i>
+                        </div>
+                        <div class="flex-grow">
+                            <div class="flex items-center justify-between">
+                                <span class="font-extrabold text-sm text-teal-950">${r.title}</span>
+                                <span class="text-xs font-extrabold ${achieved ? 'text-teal-700' : 'text-slate-400'}">${r.minXP} XP</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-0.5">${r.desc}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const modalHtml = `
+                <div class="space-y-4">
+                    <div class="text-center">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-500 flex items-center justify-center text-3xl mx-auto mb-2 shadow-playful-sm">
+                            <i class="fa-solid ${currentRank.icon}"></i>
+                        </div>
+                        <h3 class="text-xl font-extrabold text-teal-950">Jenjang Gelar & Pencapaian</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Kumpulkan XP dari kuis, bacaan sirah, dan tantangan harian!</p>
+                    </div>
+
+                    <div class="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+                        ${ranksHtml}
+                    </div>
+
+                    <button onclick="closeModal()" class="btn-game w-full py-3 rounded-2xl bg-teal-600 text-white font-extrabold text-sm shadow-playful-teal">
+                        Tutup
+                    </button>
+                </div>
+            `;
+            openModal(modalHtml);
+        }
+
+        function confirmResetData() {
+            const modalHtml = `
+                <div class="text-center space-y-4">
+                    <div class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mx-auto">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="text-lg font-extrabold text-slate-900">Reset Semua Progres?</h3>
+                    <p class="text-sm text-slate-600">Seluruh poin XP, streak harian, gelar, dan riwayat bacaan yang tersimpan di perangkat ini akan diatur ulang ke 0.</p>
+                    <div class="flex gap-3 pt-2">
+                        <button onclick="closeModal()" class="flex-1 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 font-bold text-sm text-slate-700">Batal</button>
+                        <button onclick="executeResetData()" class="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 font-bold text-sm text-white">Ya, Reset</button>
+                    </div>
+                </div>
+            `;
+            openModal(modalHtml);
+        }
+
+        function executeResetData() {
+            localStorage.removeItem(STORAGE_KEY);
+            userData = {
+                xp: 0,
+                streak: 0,
+                lastActiveDate: null,
+                dailyCompletedDate: null,
+                quizzesCompleted: 0,
+                readSirahIds: [],
+                unlockedTokohIds: []
+            };
+            saveUserData();
+            initDailyTrivia();
+            closeModal();
+            showToast("Progres berhasil diatur ulang.", "info");
+        }
+
+        function openModal(htmlContent) {
+            document.getElementById('modal-content').innerHTML = htmlContent;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+
+        // Tutup modal saat klik area luar
+        document.getElementById('custom-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        function showToast(message, type = "xp") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-teal-800 text-white border-teal-600";
+            let iconClass = "fa-star text-amber-400";
+
+            if (type === "rank") {
+                bgClass = "bg-amber-400 text-teal-950 border-amber-500";
+                iconClass = "fa-crown text-teal-900";
+            } else if (type === "info") {
+                bgClass = "bg-slate-800 text-white border-slate-700";
+                iconClass = "fa-circle-info text-teal-300";
+            }
+
+            toast.className = `pointer-events-auto flex items-center gap-2.5 px-4 py-3 rounded-2xl border-2 shadow-lg font-extrabold text-xs sm:text-sm animate-pop ${bgClass}`;
+            toast.innerHTML = `<i class="fa-solid ${iconClass} text-base"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateY(10px)';
+                toast.style.transition = 'all 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // =========================================================================
+        // 9. INITIALIZATION ON WINDOW LOAD
+        // =========================================================================
+        window.onload = function () {
+            loadUserData();
+            initDailyTrivia();
+            updateAllUI();
+        };
+    </script>
+</body>
+</html>
